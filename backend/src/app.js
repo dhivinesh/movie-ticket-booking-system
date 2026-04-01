@@ -23,6 +23,18 @@ app.use(express.urlencoded({ extended: true }));
 // ── Health check ─────────────────────────────────────────────
 app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
+// ── Vercel Cron Endpoint ─────────────────────────────────────
+const { expireReservedSeats } = require('./services/seatExpiryService');
+app.get('/cron/expire-seats', async (req, res) => {
+  try {
+    await expireReservedSeats();
+    return res.json({ success: true, message: 'Seat expiry cron executed.' });
+  } catch (error) {
+    console.error('Seat expiry cron error:', error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // ── Routes ───────────────────────────────────────────────────
 app.use('/auth',          authRoutes);
 app.use('/movies',        movieRoutes);

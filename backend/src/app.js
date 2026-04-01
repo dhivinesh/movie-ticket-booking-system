@@ -23,9 +23,11 @@ app.use(express.urlencoded({ extended: true }));
 // ── Health check ─────────────────────────────────────────────
 app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
-// ── Vercel Cron Endpoint ─────────────────────────────────────
+// ── Vercel Cron & Routes ─────────────────────────────────────
+const apiRouter = express.Router();
+
 const { expireReservedSeats } = require('./services/seatExpiryService');
-app.get('/cron/expire-seats', async (req, res) => {
+apiRouter.get('/cron/expire-seats', async (req, res) => {
   try {
     await expireReservedSeats();
     return res.json({ success: true, message: 'Seat expiry cron executed.' });
@@ -35,16 +37,18 @@ app.get('/cron/expire-seats', async (req, res) => {
   }
 });
 
-// ── Routes ───────────────────────────────────────────────────
-app.use('/auth',          authRoutes);
-app.use('/movies',        movieRoutes);
-app.use('/shows',         showRoutes);
-app.use('/seats',         seatRoutes);
-app.use('/book',          bookingRoutes);
-app.use('/user',          userRoutes);
-app.use('/admin',         adminRoutes);
-app.use('/giftcard',      giftCardRoutes);
-app.use('/owner',         theaterRoutes);
+apiRouter.use('/auth',          authRoutes);
+apiRouter.use('/movies',        movieRoutes);
+apiRouter.use('/shows',         showRoutes);
+apiRouter.use('/seats',         seatRoutes);
+apiRouter.use('/book',          bookingRoutes);
+apiRouter.use('/user',          userRoutes);
+apiRouter.use('/admin',         adminRoutes);
+apiRouter.use('/giftcard',      giftCardRoutes);
+apiRouter.use('/owner',         theaterRoutes);
+
+app.use('/api', apiRouter);
+app.use('/', apiRouter);
 
 // ── 404 ──────────────────────────────────────────────────────
 app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found.' }));

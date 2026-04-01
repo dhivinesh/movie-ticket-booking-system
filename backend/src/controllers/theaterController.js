@@ -131,10 +131,10 @@ const getOccupancy = asyncHandler(async (req, res) => {
   );
 
   const summary = {
-    total:     seats.length,
+    total: seats.length,
     available: seats.filter(s => s.status === 'available').length,
-    reserved:  seats.filter(s => s.status === 'reserved').length,
-    booked:    seats.filter(s => s.status === 'booked').length,
+    reserved: seats.filter(s => s.status === 'reserved').length,
+    booked: seats.filter(s => s.status === 'booked').length,
   };
 
   res.json({ success: true, seats, summary });
@@ -194,7 +194,22 @@ const verifyTicket = asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, message: 'Booking not found or not for your theater.' });
   }
 
-  res.json({ success: true, valid: rows[0].status === 'confirmed', booking: rows[0] });
+  const booking = rows[0];
+  const isConfirmed = booking.status === 'confirmed';
+
+  // Optional: check if show is today or future
+  const showDate = new Date(booking.start_time);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const isUpcoming = showDate >= today;
+
+  res.json({
+    success: true,
+    valid: isConfirmed && isUpcoming,
+    message: !isUpcoming ? 'This show has already passed.' : (isConfirmed ? 'Ticket is valid.' : 'Ticket is not confirmed.'),
+    booking
+  });
 });
 
 module.exports = { getOwnerTheaters, createTheater, updateTheater, getScreensByTheater, createScreen, getOwnerShows, getOccupancy, getDailySales, verifyTicket };

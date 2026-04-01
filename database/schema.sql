@@ -71,6 +71,8 @@ CREATE TABLE IF NOT EXISTS shows (
   screen_id   INT UNSIGNED    NOT NULL,
   start_time  DATETIME        NOT NULL,
   price       DECIMAL(10,2)   NOT NULL,
+  total_seats INT UNSIGNED    DEFAULT NULL COMMENT 'Optional override for screen capacity',
+  status      ENUM('scheduled', 'cancelled') DEFAULT 'scheduled',
   FOREIGN KEY (movie_id)  REFERENCES movies(id)  ON DELETE CASCADE,
   FOREIGN KEY (screen_id) REFERENCES screens(id) ON DELETE CASCADE,
   INDEX idx_movie  (movie_id),

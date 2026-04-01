@@ -76,9 +76,14 @@ export default function SeatSelection() {
                   let seatClass = 'bg-gray-100 text-gray-400 cursor-not-allowed'; // Default to unavailable
                   
                   if (seat.status === 'available') {
-                    seatClass = isSelected 
-                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/50 scale-110 !border-indigo-600' 
-                      : 'bg-white text-gray-700 hover:bg-indigo-50 hover:border-indigo-400 cursor-pointer';
+                    if (isSelected) {
+                      seatClass = 'bg-indigo-600 text-white shadow-md shadow-indigo-500/50 scale-110 !border-indigo-600';
+                    } else {
+                      // Tier based styling
+                      if (seat.tier === 'VIP') seatClass = 'bg-amber-50 border-amber-400 text-amber-700 hover:bg-amber-100 hover:border-amber-600 cursor-pointer';
+                      else if (seat.tier === 'Gold') seatClass = 'bg-slate-50 border-slate-400 text-slate-700 hover:bg-slate-100 hover:border-slate-600 cursor-pointer';
+                      else seatClass = 'bg-white text-gray-700 hover:bg-indigo-50 hover:border-indigo-400 cursor-pointer';
+                    }
                   } else if (seat.status === 'reserved') {
                     seatClass = 'bg-orange-200 text-orange-600 cursor-not-allowed';
                   }
@@ -102,18 +107,22 @@ export default function SeatSelection() {
         </div>
 
         {/* Legend */}
-        <div className="flex justify-center gap-6 mt-12 pt-6 border-t border-gray-100">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-12 pt-6 border-t border-gray-100">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-t-md bg-white border border-gray-200"></div>
-            <span className="text-sm text-gray-600 font-medium">Available</span>
+            <div className="w-5 h-5 rounded-t bg-amber-50 border border-amber-400"></div>
+            <span className="text-xs text-gray-600 font-medium">VIP (1.5x)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-t-md bg-indigo-600 border border-indigo-600"></div>
-            <span className="text-sm text-gray-600 font-medium">Selected</span>
+            <div className="w-5 h-5 rounded-t bg-slate-50 border border-slate-400"></div>
+            <span className="text-xs text-gray-600 font-medium">Gold (1.2x)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-t-md bg-gray-200 border-gray-300"></div>
-            <span className="text-sm text-gray-600 font-medium">Booked</span>
+            <div className="w-5 h-5 rounded-t bg-white border border-gray-200"></div>
+            <span className="text-xs text-gray-600 font-medium">Standard</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-t bg-indigo-600 border border-indigo-600"></div>
+            <span className="text-xs text-gray-600 font-medium">Selected</span>
           </div>
         </div>
       </div>
@@ -123,11 +132,16 @@ export default function SeatSelection() {
         <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 animate-[slideUp_0.3s_ease-out]">
           <div className="max-w-4xl mx-auto flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500 mb-1">({selectedSeats.length} Seats Selected)</p>
-              <div className="flex flex-wrap gap-1 max-w-[200px] sm:max-w-md">
+              <p className="text-sm text-gray-500 mb-1">
+                ({selectedSeats.length} Seats) • <span className="font-bold text-gray-900 text-lg">Total: ₹{
+                  selectedSeats.reduce((sum, s) => sum + (parseFloat(s.base_price) * parseFloat(s.price_multiplier)), 0).toFixed(2)
+                }</span>
+              </p>
+              <div className="flex flex-wrap gap-1 max-w-[250px] sm:max-w-xl">
                 {selectedSeats.map(s => (
-                  <span key={s.id} className="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-1 rounded">
-                    {s.row_label}{s.seat_num}
+                  <span key={s.id} className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 flex items-center gap-1">
+                    {s.row_label}{s.seat_num} 
+                    <span className="opacity-60 font-normal">({s.tier}: ₹{(parseFloat(s.base_price) * parseFloat(s.price_multiplier)).toFixed(0)})</span>
                   </span>
                 ))}
               </div>

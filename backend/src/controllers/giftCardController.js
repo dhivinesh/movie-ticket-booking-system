@@ -3,7 +3,7 @@ const { asyncHandler } = require('../middleware/errorHandler');
 
 // ── POST /giftcard/create  (admin only) ──────────────────────
 const createGiftCard = asyncHandler(async (req, res) => {
-  const { code, value } = req.body;
+  const { code, value, expires_at } = req.body;
   if (!code || !value) {
     return res.status(400).json({ success: false, message: 'Code and value are required.' });
   }
@@ -14,11 +14,11 @@ const createGiftCard = asyncHandler(async (req, res) => {
   }
 
   await pool.query(
-    'INSERT INTO gift_cards (code, value, is_active, created_by) VALUES (?, ?, 1, ?)',
-    [code.toUpperCase(), parseFloat(value), req.user.id]
+    'INSERT INTO gift_cards (code, value, is_active, created_by, expires_at) VALUES (?, ?, 1, ?, ?)',
+    [code.toUpperCase(), parseFloat(value), req.user.id, expires_at || null]
   );
 
-  res.status(201).json({ success: true, message: 'Gift card created.' });
+  res.status(201).json({ success: true, message: 'Gift card created successfully.' });
 });
 
 // ── POST /giftcard/redeem ────────────────────────────────────
@@ -37,10 +37,17 @@ const redeemGiftCard = asyncHandler(async (req, res) => {
 
     if (cards.length === 0) {
       await conn.rollback();
-      return res.status(404).json({ success: false, message: 'Invalid or already redeemed gift card.' });
+      return res.status(404).json({ success: false, message: 'Invalid, deactivated, or already redeemed gift card.' });
     }
 
     const card = cards[0];
+
+    // Check expiry
+    if (card.expires_at && new Date(card.expires_at) < new Date()) {
+      await conn.rollback();
+      return res.status(410).json({ success: false, message: 'This gift card has expired.' });
+    }
+
     if (card.redeemed_by) {
       await conn.rollback();
       return res.status(409).json({ success: false, message: 'Gift card already redeemed.' });

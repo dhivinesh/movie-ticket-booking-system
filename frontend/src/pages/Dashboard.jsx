@@ -6,7 +6,7 @@ import { Ticket, Gift, CreditCard, ChevronRight, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [giftCode, setGiftCode] = useState('');
   const [redeemMsg, setRedeemMsg] = useState('');
@@ -34,8 +34,8 @@ export default function Dashboard() {
       const { data } = await api.post('/giftcard/redeem', { code: giftCode });
       setRedeemMsg({ type: 'success', text: data.message });
       setGiftCode('');
-      // In a real app we might want to refresh user context entirely, but a page reload works for now to sync balance
-      setTimeout(() => window.location.reload(), 1500);
+      // Use reactive refresh instead of page reload
+      await refreshUser();
     } catch (err) {
       setRedeemMsg({ type: 'error', text: err.response?.data?.message || 'Failed to redeem.' });
     }
@@ -49,7 +49,9 @@ export default function Dashboard() {
     try {
       const { data } = await api.delete(`/book/${id}`);
       toast.success(data.message || 'Booking cancelled successfully.');
-      setTimeout(() => window.location.reload(), 1500);
+      // Refresh both bookings list and user balance
+      fetchBookings();
+      refreshUser();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to cancel booking.');
     }
@@ -136,7 +138,11 @@ export default function Dashboard() {
                     <div className="flex-grow">
                       <div className="flex justify-between items-start">
                         <h4 className="font-bold text-lg text-gray-900 group-hover:text-indigo-700">{booking.movie_title}</h4>
-                        <span className={`text-sm font-bold px-2 py-0.5 rounded ${booking.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded tracking-wider ${
+                          booking.status === 'cancelled' ? 'bg-red-100 text-red-700' : 
+                          booking.status === 'refunded' ? 'bg-blue-100 text-blue-700' : 
+                          'bg-green-100 text-green-700'
+                        }`}>
                           {booking.status.toUpperCase()}
                         </span>
                       </div>
@@ -151,7 +157,7 @@ export default function Dashboard() {
 
                     <div className="flex flex-col items-end gap-3 hidden sm:flex">
                       <ChevronRight className="text-gray-400 group-hover:text-indigo-600" />
-                      {booking.status === 'confirmed' && new Date(booking.start_time) > new Date() && (
+                      {['confirmed', 'active'].includes(booking.status) && new Date(booking.start_time) > new Date() && (
                         <button 
                           onClick={(e) => handleCancelBooking(e, booking.id)}
                           className="text-xs font-semibold text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg border border-red-100 transition flex items-center gap-1"

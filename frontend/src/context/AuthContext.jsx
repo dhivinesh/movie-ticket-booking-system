@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../lib/axios';
 
 const AuthContext = createContext(null);
 
@@ -31,8 +32,21 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const refreshUser = async () => {
+    try {
+      const { data } = await api.get('/user/profile');
+      if (data.success) {
+        setUser(data.data);
+        localStorage.setItem('user', JSON.stringify(data.data));
+        return data.data;
+      }
+    } catch (err) {
+      console.error('Failed to refresh user:', err);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ user, token, login, logout, refreshUser, loading, isAuthenticated: !!token }}>
       {children}
     </AuthContext.Provider>
   );

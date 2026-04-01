@@ -1,0 +1,184 @@
+[
+  {
+    "id": 1,
+    "movie_id": 1,
+    "start_time": "2026-03-07T05:00:00.000Z",
+    "is_upcoming": 0,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 2,
+    "movie_id": 1,
+    "start_time": "2026-03-07T08:30:00.000Z",
+    "is_upcoming": 0,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 3,
+    "movie_id": 2,
+    "start_time": "2026-03-07T05:30:00.000Z",
+    "is_upcoming": 0,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 4,
+    "movie_id": 3,
+    "start_time": "2026-03-07T10:00:00.000Z",
+    "is_upcoming": 0,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 5,
+    "movie_id": 4,
+    "start_time": "2026-03-07T12:30:00.000Z",
+    "is_upcoming": 0,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 6,
+    "movie_id": 1,
+    "start_time": "2026-03-07T15:00:00.000Z",
+    "is_upcoming": 0,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 7,
+    "movie_id": 5,
+    "start_time": "2026-03-08T12:30:00.000Z",
+    "is_upcoming": 0,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 8,
+    "movie_id": 6,
+    "start_time": "2026-03-12T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 9,
+    "movie_id": 7,
+    "start_time": "2026-03-08T12:30:00.000Z",
+    "is_upcoming": 0,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 10,
+    "movie_id": 8,
+    "start_time": "2026-03-08T12:30:00.000Z",
+    "is_upcoming": 0,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 11,
+    "movie_id": 9,
+    "start_time": "2026-03-08T12:30:00.000Z",
+    "is_upcoming": 0,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 12,
+    "movie_id": 10,
+    "start_time": "2026-03-10T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 13,
+    "movie_id": 11,
+    "start_time": "2026-03-12T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 14,
+    "movie_id": 12,
+    "start_time": "2026-03-12T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 15,
+    "movie_id": 13,
+    "start_time": "2026-03-10T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 16,
+    "movie_id": 14,
+    "start_time": "2026-03-08T12:30:00.000Z",
+    "is_upcoming": 0,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 17,
+    "movie_id": 15,
+    "start_time": "2026-03-12T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 18,
+    "movie_id": 16,
+    "start_time": "2026-03-11T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 19,
+    "movie_id": 17,
+    "start_time": "2026-03-12T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 20,
+    "movie_id": 18,
+    "start_time": "2026-03-10T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 21,
+    "movie_id": 19,
+    "start_time": "2026-03-12T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 22,
+    "movie_id": 20,
+    "start_time": "2026-03-10T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 23,
+    "movie_id": 21,
+    "start_time": "2026-03-11T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 24,
+    "movie_id": 22,
+    "start_time": "2026-03-09T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 25,
+    "movie_id": 23,
+    "start_time": "2026-03-10T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  },
+  {
+    "id": 26,
+    "movie_id": 24,
+    "start_time": "2026-03-12T12:30:00.000Z",
+    "is_upcoming": 1,
+    "db_now": "2026-03-09T06:02:46.000Z"
+  }
+]

@@ -22,16 +22,14 @@ const createBooking = asyncHandler(async (req, res) => {
   try {
     await conn.beginTransaction();
 
-    // 1. Get show price
+    // 1. Get show base price
     const [[show]] = await conn.query('SELECT id, price FROM shows WHERE id = ?', [show_id]);
     if (!show) throw Object.assign(new Error('Show not found.'), { statusCode: 404 });
 
-    const total_price = show.price * seat_ids.length;
-
-    // 2. Lock seats using SELECT ... FOR UPDATE to prevent concurrent booking
+    // 2. Lock seats and get their multipliers
     const placeholders = seat_ids.map(() => '?').join(',');
     const [seats] = await conn.query(
-      `SELECT id, status FROM seats WHERE id IN (${placeholders}) AND show_id = ? FOR UPDATE`,
+      `SELECT id, status, price_multiplier FROM seats WHERE id IN (${placeholders}) AND show_id = ? FOR UPDATE`,
       [...seat_ids, show_id]
     );
 
@@ -45,6 +43,8 @@ const createBooking = asyncHandler(async (req, res) => {
       await conn.rollback();
       return res.status(409).json({ success: false, message: 'One or more seats are already reserved or booked.' });
     }
+
+    const total_price = seats.reduce((sum, s) => sum + (parseFloat(show.price) * parseFloat(s.price_multiplier)), 0);
 
     // 3. Handle payment
     if (payment_method === 'gift_card') {

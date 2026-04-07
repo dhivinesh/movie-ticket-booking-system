@@ -8,9 +8,9 @@ router.get('/',        getAllMovies);
 router.get('/genres',  getGenres);
 router.get('/:id',     getMovieById);
 
-// Admin only
-router.post('/',     verifyToken, requireRole('admin'), createMovie);
-router.put('/:id',   verifyToken, requireRole('admin'), updateMovie);
-router.delete('/:id',verifyToken, requireRole('admin'), deleteMovie);
+// Admin & Theater Owner
+router.post('/',     verifyToken, requireRole('admin', 'theater_owner'), createMovie);
+router.put('/:id',   verifyToken, requireRole('admin', 'theater_owner'), updateMovie);
+router.delete('/:id',verifyToken, requireRole('admin', 'theater_owner'), deleteMovie);
 
 module.exports = router;

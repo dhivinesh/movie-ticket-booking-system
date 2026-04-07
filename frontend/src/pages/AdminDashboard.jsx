@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../lib/axios';
 import { Users, Film, Gift, BarChart4, CheckCircle, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import AddMovieModal from '../components/AddMovieModal';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
@@ -23,6 +24,7 @@ export default function AdminDashboard() {
   };
 
   const [isGiftCardModalOpen, setIsGiftCardModalOpen] = useState(false);
+  const [isMovieModalOpen, setIsMovieModalOpen] = useState(false);
   const [giftCardData, setGiftCardData] = useState({ code: '', value: '', expires_at: '' });
 
   const handleGenerateGiftCard = async (e) => {
@@ -91,7 +93,10 @@ export default function AdminDashboard() {
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Platform Management</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition group">
+            <button 
+              onClick={() => setIsMovieModalOpen(true)}
+              className="flex items-center gap-3 p-4 border border-gray-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition group"
+            >
               <Film className="text-indigo-500" />
               <div className="text-left">
                 <p className="font-bold text-gray-900 group-hover:text-indigo-700">Add New Movie</p>
@@ -126,6 +131,12 @@ export default function AdminDashboard() {
           <p className="text-xs text-center text-gray-400 mt-6">(Management forms omitted for brevity in this MVP layout)</p>
         </div>
       </div>
+
+      <AddMovieModal 
+        isOpen={isMovieModalOpen} 
+        onClose={() => setIsMovieModalOpen(false)} 
+        onSuccess={fetchAnalytics}
+      />
 
       {/* Gift Card Modal */}
       {isGiftCardModalOpen && (

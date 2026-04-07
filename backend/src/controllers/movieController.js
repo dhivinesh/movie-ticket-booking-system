@@ -54,7 +54,7 @@ const getGenres = asyncHandler(async (req, res) => {
   res.json({ success: true, data: rows.map(r => r.genre) });
 });
 
-// ── POST /admin/movies ───────────────────────────────────────
+// ── POST /movies (Admin & Theater Owner) ──────────────────────
 const createMovie = asyncHandler(async (req, res) => {
   const { title, genre, duration, description, poster_url, language, rating } = req.body;
 
@@ -63,17 +63,25 @@ const createMovie = asyncHandler(async (req, res) => {
   }
 
   const [result] = await pool.query(
-    'INSERT INTO movies (title, genre, duration, description, poster_url, language, rating) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [title, genre, parseInt(duration), description || '', poster_url || '', language || 'English', parseFloat(rating) || 0.0]
+    'INSERT INTO movies (title, genre, duration, description, poster_url, language, rating, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    [title, genre, parseInt(duration), description || '', poster_url || '', language || 'English', parseFloat(rating) || 0.0, req.user.id]
   );
 
   res.status(201).json({ success: true, message: 'Movie created.', id: result.insertId });
 });
 
-// ── PUT /admin/movies/:id ────────────────────────────────────
+// ── PUT /movies/:id ──────────────────────────────────────────
 const updateMovie = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { title, genre, duration, description, poster_url, language, rating, is_active } = req.body;
+
+  // Check if user is admin OR the creator of the movie
+  const [[movie]] = await pool.query('SELECT created_by FROM movies WHERE id = ?', [id]);
+  if (!movie) return res.status(404).json({ success: false, message: 'Movie not found.' });
+
+  if (req.user.role !== 'admin' && movie.created_by !== req.user.id) {
+    return res.status(403).json({ success: false, message: 'Forbidden. You do not have permission to edit this movie.' });
+  }
 
   await pool.query(
     `UPDATE movies SET
@@ -92,9 +100,18 @@ const updateMovie = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Movie updated.' });
 });
 
-// ── DELETE /admin/movies/:id ─────────────────────────────────
+// ── DELETE /movies/:id ───────────────────────────────────────
 const deleteMovie = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
+  // Check if user is admin OR the creator of the movie
+  const [[movie]] = await pool.query('SELECT created_by FROM movies WHERE id = ?', [id]);
+  if (!movie) return res.status(404).json({ success: false, message: 'Movie not found.' });
+
+  if (req.user.role !== 'admin' && movie.created_by !== req.user.id) {
+    return res.status(403).json({ success: false, message: 'Forbidden. You do not have permission to delete this movie.' });
+  }
+
   await pool.query('UPDATE movies SET is_active = 0 WHERE id = ?', [id]);
   res.json({ success: true, message: 'Movie deactivated.' });
 });

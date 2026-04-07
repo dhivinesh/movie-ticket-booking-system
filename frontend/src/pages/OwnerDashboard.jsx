@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import api from '../lib/axios';
-import { Building2, Presentation, CalendarCheck, ScanLine, Users, TrendingUp, XCircle, X } from 'lucide-react';
+import { Building2, Presentation, CalendarCheck, ScanLine, Users, TrendingUp, XCircle, X, Film } from 'lucide-react';
 import toast from 'react-hot-toast';
+import AddMovieModal from '../components/AddMovieModal';
 
 export default function OwnerDashboard() {
   const [shows, setShows] = useState([]);
@@ -12,6 +13,7 @@ export default function OwnerDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTheaterModalOpen, setIsTheaterModalOpen] = useState(false);
   const [isScreenModalOpen, setIsScreenModalOpen] = useState(false);
+  const [isMovieModalOpen, setIsMovieModalOpen] = useState(false);
 
   const [movies, setMovies] = useState([]);
   const [theaters, setTheaters] = useState([]);
@@ -287,6 +289,12 @@ export default function OwnerDashboard() {
               >
                 <CalendarCheck size={18} /> Schedule Shows
               </button>
+              <button
+                onClick={() => setIsMovieModalOpen(true)}
+                className="w-full text-left flex items-center gap-3 p-3 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition font-bold text-sm text-indigo-700 border border-indigo-100"
+              >
+                <Film size={18} /> Add New Movie (Global Catalog)
+              </button>
             </div>
           </div>
 
@@ -549,6 +557,12 @@ export default function OwnerDashboard() {
           </div>
         </div>
       )}
+
+      <AddMovieModal 
+        isOpen={isMovieModalOpen} 
+        onClose={() => setIsMovieModalOpen(false)} 
+        onSuccess={fetchTheatersAndMovies} 
+      />
     </div>
   );
 }

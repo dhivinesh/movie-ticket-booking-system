@@ -8,9 +8,16 @@ backend/node_modules/
 frontend/.env.local
 backend/.env
 
-# logs
+# logs and temporary data
 *.log
+backend/*.json
+!backend/package.json
+!backend/package-lock.json
+project-status.md
+project_report.md
+system_audit.md
 
 # build files
 dist/
 build/
+.vercel/

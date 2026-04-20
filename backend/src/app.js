@@ -16,7 +16,25 @@ const { errorHandler } = require('./middleware/errorHandler');
 const app = express();
 
 // ── Middleware ───────────────────────────────────────────────
-app.use(cors({ origin: process.env.FRONTEND_URL || ['http://localhost:3000', 'http://localhost:5173', 'https://photoelectric-johnsie-unremittingly.ngrok-free.dev'], credentials: true }));
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://photoelectric-johnsie-unremittingly.ngrok-free.dev',
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, curl, Render health checks)
+    if (!origin) return callback(null, true);
+    // Allow any *.vercel.app subdomain (covers preview + production deployments)
+    if (/\.vercel\.app$/.test(origin)) return callback(null, true);
+    // Allow explicitly listed origins
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: Origin "${origin}" is not allowed.`));
+  },
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
